@@ -1,9 +1,10 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import CardSwap, { Card } from "@/components/card-swap"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -36,7 +37,7 @@ const critiques = [
     stage: "Concept",
     tools: ["AutoCAD", "Lumion"],
     responses: 6,
-    note: "This is early-stage. Looking for structural critique on programming sequence — how to move people from transit node to water edge.",
+    note: "Early-stage work. Looking for structural critique on programming sequence — how to move people from transit node to water edge.",
   },
   {
     id: "04",
@@ -50,16 +51,26 @@ const critiques = [
   },
 ]
 
+const stageColors: Record<string, string> = {
+  Concept: "text-muted-foreground border-muted-foreground/30",
+  "Work in Progress": "text-accent border-accent/40",
+  "Near Final": "text-foreground border-foreground/30",
+  Prototype: "text-accent border-accent/40",
+}
+
+// Dimensions that fit the layout well
+const CARD_W = 560
+const CARD_H = 340
+
 export function CritiquesSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
-  const stackRef = useRef<HTMLDivElement>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
-    if (!sectionRef.current || !stackRef.current) return
-
+    if (!sectionRef.current) return
     const ctx = gsap.context(() => {
-      // Header slide in
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
@@ -77,70 +88,40 @@ export function CritiquesSection() {
           },
         )
       }
-
-      // Stack card interaction
-      const cards = stackRef.current?.querySelectorAll<HTMLElement>("[data-card]")
-      if (!cards || cards.length === 0) return
-
-      const totalCards = cards.length
-      const ITEM_DISTANCE = 120
-      const ITEM_SCALE = 0.05
-      const STACK_POSITION = "25%"
-
-      // Initial stack state — all cards layered with scale/y offset
-      cards.forEach((card, i) => {
-        const reverseIndex = totalCards - 1 - i
-        gsap.set(card, {
-          y: reverseIndex * 16,
-          scale: 1 - reverseIndex * ITEM_SCALE,
-          opacity: reverseIndex > 2 ? 0 : 1,
-          zIndex: i,
-        })
-      })
-
-      // Pin the section and animate cards off the stack as we scroll
-      ScrollTrigger.create({
-        trigger: stackRef.current,
-        start: `top ${STACK_POSITION}`,
-        end: `+=${ITEM_DISTANCE * totalCards}`,
-        pin: true,
-        scrub: 0.6,
-        onUpdate: (self) => {
-          const progress = self.progress
-          const cardProgress = progress * totalCards
-
-          cards.forEach((card, i) => {
-            const cardStart = i / totalCards
-            const cardEnd = (i + 1) / totalCards
-            const p = Math.max(0, Math.min(1, (progress - cardStart) / (cardEnd - cardStart)))
-
-            if (p > 0) {
-              // This card animates off: slide up, fade out, rotate slightly
-              gsap.set(card, {
-                y: -120 * p,
-                opacity: 1 - p,
-                rotateX: 8 * p,
-                scale: 1 - p * 0.08,
-              })
-            }
-
-            // Re-stack cards below the active one
-            const remainingIndex = Math.max(0, i - Math.floor(cardProgress))
-            if (p === 0) {
-              gsap.set(card, {
-                y: remainingIndex * 16,
-                scale: 1 - remainingIndex * ITEM_SCALE,
-                opacity: remainingIndex > 2 ? 0 : 1,
-                rotateX: 0,
-              })
-            }
-          })
-        },
-      })
+      if (wrapRef.current) {
+        gsap.fromTo(
+          wrapRef.current,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: wrapRef.current,
+              start: "top 88%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        )
+      }
     }, sectionRef)
-
     return () => ctx.revert()
   }, [])
+
+  // Cycle activeIndex every 5s to keep the info panel in sync with CardSwap
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % critiques.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const handleCardClick = useCallback((idx: number) => {
+    setActiveIndex(idx)
+  }, [])
+
+  const active = critiques[activeIndex]
 
   return (
     <section id="critiques" ref={sectionRef} className="relative py-32 pl-6 md:pl-28 pr-6 md:pr-12">
@@ -149,114 +130,177 @@ export function CritiquesSection() {
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">01 / Critiques</span>
         <h2 className="mt-4 font-[var(--font-bebas)] text-5xl md:text-7xl tracking-tight">OPEN FOR REVIEW</h2>
         <p className="mt-4 max-w-md font-mono text-xs text-muted-foreground leading-relaxed">
-          Works in progress seeking structured feedback from the community. Scroll to move through active critique requests.
+          Works in progress seeking structured feedback from the community. Cards auto-advance every few seconds.
         </p>
       </div>
 
-      {/* Scroll stack container */}
+      {/* Layout: info panel left, CardSwap right */}
       <div
-        ref={stackRef}
-        className="relative h-[480px] md:h-[520px] perspective-[1200px]"
-        style={{ perspective: "1200px" }}
+        ref={wrapRef}
+        className="relative flex flex-col md:flex-row gap-10 md:gap-0 items-start md:items-stretch"
+        style={{ minHeight: CARD_H + 80 }}
       >
-        {critiques.map((critique, index) => (
-          <CritiqueCard key={critique.id} critique={critique} index={index} total={critiques.length} />
-        ))}
-      </div>
+        {/* Left — active critique info */}
+        <div className="flex-1 flex flex-col justify-between pr-0 md:pr-16 max-w-lg">
+          {/* Top meta */}
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-accent">
+                {active.discipline}
+              </span>
+              <span
+                className={cn(
+                  "font-mono text-[10px] uppercase tracking-widest border px-2 py-0.5",
+                  stageColors[active.stage] ?? "text-muted-foreground border-muted-foreground/30",
+                )}
+              >
+                {active.stage}
+              </span>
+            </div>
 
-      {/* Scroll hint */}
-      <div className="mt-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-        <div className="w-12 h-px bg-border" />
-        <span>Scroll to browse critiques</span>
-      </div>
-    </section>
-  )
-}
+            <h3
+              key={active.id}
+              className="font-[var(--font-bebas)] text-3xl md:text-4xl lg:text-5xl tracking-tight leading-tight max-w-md"
+            >
+              {active.title}
+            </h3>
 
-function CritiqueCard({
-  critique,
-  index,
-  total,
-}: {
-  critique: (typeof critiques)[number]
-  index: number
-  total: number
-}) {
-  const stageColors: Record<string, string> = {
-    Concept: "text-muted-foreground border-muted-foreground/30",
-    "Work in Progress": "text-accent border-accent/40",
-    "Near Final": "text-foreground border-foreground/30",
-    Prototype: "text-accent border-accent/40",
-  }
+            <p className="mt-5 font-mono text-xs text-muted-foreground leading-relaxed max-w-sm">
+              {active.note}
+            </p>
+          </div>
 
-  return (
-    <article
-      data-card
-      className={cn(
-        "absolute inset-0 border border-border/50 bg-card p-8 md:p-10",
-        "flex flex-col justify-between",
-        "origin-top",
-      )}
-      style={{ transformOrigin: "top center" }}
-    >
-      {/* Top row */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-accent">
-              {critique.discipline}
-            </span>
-            <span
+          {/* Footer meta */}
+          <div className="mt-10 pt-6 border-t border-border/20 flex flex-col gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="font-mono text-xs text-foreground/70">by {active.author}</span>
+              <div className="flex items-center gap-2">
+                {active.tools.map((tool) => (
+                  <span
+                    key={tool}
+                    className="font-mono text-[10px] text-muted-foreground border border-border/40 px-2 py-0.5"
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              <span className="font-mono text-[10px] text-muted-foreground">
+                {active.responses} responses open
+              </span>
+            </div>
+
+            {/* Progress dots */}
+            <div className="flex items-center gap-2 mt-2">
+              {critiques.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveIndex(i)}
+                  className={cn(
+                    "h-px transition-all duration-300",
+                    i === activeIndex
+                      ? "w-8 bg-accent"
+                      : "w-4 bg-border/60 hover:bg-border",
+                  )}
+                  aria-label={`View critique ${i + 1}`}
+                />
+              ))}
+              <span className="font-mono text-[10px] text-muted-foreground ml-2">
+                {String(activeIndex + 1).padStart(2, "0")} / {String(critiques.length).padStart(2, "0")}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right — CardSwap stack */}
+        <div
+          className="relative hidden md:block flex-shrink-0"
+          style={{ width: CARD_W + 180, height: CARD_H + 120 }}
+        >
+          <CardSwap
+            width={CARD_W}
+            height={CARD_H}
+            cardDistance={50}
+            verticalDistance={60}
+            delay={5000}
+            pauseOnHover
+            skewAmount={5}
+            easing="elastic"
+            onCardClick={handleCardClick}
+          >
+            {critiques.map((c) => (
+              <Card key={c.id} className="overflow-hidden cursor-pointer">
+                <div className="flex flex-col justify-between h-full p-7 md:p-8">
+                  {/* Card top */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-accent">
+                        {c.discipline}
+                      </span>
+                      <span
+                        className={cn(
+                          "font-mono text-[10px] uppercase tracking-widest border px-2 py-0.5",
+                          stageColors[c.stage] ?? "text-muted-foreground border-muted-foreground/30",
+                        )}
+                      >
+                        {c.stage}
+                      </span>
+                    </div>
+                    <h3 className="font-[var(--font-bebas)] text-2xl md:text-3xl tracking-tight leading-tight">
+                      {c.title}
+                    </h3>
+                    <p className="mt-3 font-mono text-[11px] text-muted-foreground leading-relaxed line-clamp-3">
+                      {c.note}
+                    </p>
+                  </div>
+
+                  {/* Card footer */}
+                  <div className="flex items-center justify-between pt-5 border-t border-border/20 mt-5">
+                    <span className="font-mono text-[11px] text-foreground/60">by {c.author}</span>
+                    <div className="flex items-center gap-1.5">
+                      {c.tools.map((tool) => (
+                        <span
+                          key={tool}
+                          className="font-mono text-[10px] text-muted-foreground border border-border/30 px-1.5 py-0.5"
+                        >
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Corner accent */}
+                <div className="absolute top-0 left-0 w-16 h-16 opacity-30 pointer-events-none">
+                  <div className="absolute top-0 left-0 w-full h-[1px] bg-accent" />
+                  <div className="absolute top-0 left-0 w-[1px] h-full bg-accent" />
+                </div>
+              </Card>
+            ))}
+          </CardSwap>
+        </div>
+
+        {/* Mobile fallback — simple stacked card list */}
+        <div className="flex flex-col gap-4 w-full md:hidden">
+          {critiques.map((c, i) => (
+            <button
+              key={c.id}
+              onClick={() => setActiveIndex(i)}
               className={cn(
-                "font-mono text-[10px] uppercase tracking-widest border px-2 py-0.5",
-                stageColors[critique.stage] ?? "text-muted-foreground border-muted-foreground/30",
+                "text-left border p-5 transition-all duration-300",
+                i === activeIndex ? "border-accent/60 bg-accent/5" : "border-border/30",
               )}
             >
-              {critique.stage}
-            </span>
-          </div>
-          <h3 className="font-[var(--font-bebas)] text-3xl md:text-4xl lg:text-5xl tracking-tight leading-tight max-w-2xl">
-            {critique.title}
-          </h3>
-        </div>
-        <span className="font-mono text-[10px] text-muted-foreground/40 flex-shrink-0">
-          {critique.id} / {String(total).padStart(2, "0")}
-        </span>
-      </div>
-
-      {/* Body */}
-      <p className="font-mono text-xs text-muted-foreground leading-relaxed max-w-xl mt-6">
-        {critique.note}
-      </p>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between mt-8 pt-6 border-t border-border/20">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-xs text-foreground/70">by {critique.author}</span>
-          <div className="flex items-center gap-2">
-            {critique.tools.map((tool) => (
-              <span
-                key={tool}
-                className="font-mono text-[10px] text-muted-foreground border border-border/40 px-2 py-0.5"
-              >
-                {tool}
+              <span className="font-mono text-[10px] uppercase tracking-widest text-accent block mb-1">
+                {c.discipline}
               </span>
-            ))}
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] text-muted-foreground">
-            {critique.responses} responses
-          </span>
-          <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              <span className="font-[var(--font-bebas)] text-xl tracking-tight">{c.title}</span>
+            </button>
+          ))}
         </div>
       </div>
-
-      {/* Corner accent */}
-      <div className="absolute top-0 left-0 w-16 h-16 opacity-30">
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-accent" />
-        <div className="absolute top-0 left-0 w-[1px] h-full bg-accent" />
-      </div>
-    </article>
+    </section>
   )
 }

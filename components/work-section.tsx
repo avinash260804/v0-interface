@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -15,7 +16,8 @@ const showcases = [
     tools: ["SketchUp", "V-Ray"],
     appreciations: 962,
     description: "A walnut and linen living space exploring tension between warmth and restraint.",
-    height: "tall", // drives masonry visual weight
+    image: "/showcase-warm-minimal.png",
+    height: "tall",
   },
   {
     title: "Tower Facade Study",
@@ -24,6 +26,7 @@ const showcases = [
     tools: ["Rhino", "Grasshopper"],
     appreciations: 741,
     description: "Parametric curtain wall studies for a 42-floor residential tower.",
+    image: "/showcase-tower-facade.png",
     height: "short",
   },
   {
@@ -33,6 +36,7 @@ const showcases = [
     tools: ["AutoCAD", "Lumion"],
     appreciations: 584,
     description: "Activation strategy and programming sequence for a 2km riverbank edge.",
+    image: "/showcase-waterfront.png",
     height: "medium",
   },
   {
@@ -42,6 +46,7 @@ const showcases = [
     tools: ["Figma", "Keyshot"],
     appreciations: 812,
     description: "Haptic and spatial language system for public transit navigation.",
+    image: "/showcase-wayfinding.png",
     height: "short",
   },
   {
@@ -51,6 +56,7 @@ const showcases = [
     tools: ["Revit", "Enscape"],
     appreciations: 439,
     description: "A heritage building transformation where the courtyard becomes the primary civic space.",
+    image: "/showcase-courtyard.png",
     height: "tall",
   },
   {
@@ -60,6 +66,7 @@ const showcases = [
     tools: ["InDesign", "Illustrator"],
     appreciations: 1200,
     description: "Free grid system templates for editorial layout — 980 saves.",
+    image: "/showcase-editorial.png",
     height: "medium",
   },
   {
@@ -69,6 +76,7 @@ const showcases = [
     tools: ["ArchiCAD", "ClimateConsultant"],
     appreciations: 327,
     description: "Passive design strategies applied to affordable housing in humid subtropical climates.",
+    image: "/showcase-bioclimatic.png",
     height: "short",
   },
   {
@@ -78,15 +86,16 @@ const showcases = [
     tools: ["SketchUp", "Photoshop"],
     appreciations: 651,
     description: "Tight spatial choreography for a 28-seat restaurant — flow, ergonomics, and atmosphere.",
+    image: "/showcase-kitchen.png",
     height: "medium",
   },
 ]
 
-// Heights for masonry columns in px
-const heightMap = {
-  tall: 340,
-  medium: 260,
-  short: 200,
+// Image area heights in px (controls how much of the card is the image)
+const imageHeightMap: Record<string, number> = {
+  tall: 260,
+  medium: 200,
+  short: 150,
 }
 
 export function WorkSection() {
@@ -96,18 +105,17 @@ export function WorkSection() {
   const col2Ref = useRef<HTMLDivElement>(null)
   const col3Ref = useRef<HTMLDivElement>(null)
 
-  // Distribute into 3 masonry columns (greedy shortest-column algorithm)
+  // Greedy shortest-column masonry distribution
   const columns: (typeof showcases)[] = [[], [], []]
   const colHeights = [0, 0, 0]
   showcases.forEach((item) => {
     const minCol = colHeights.indexOf(Math.min(...colHeights))
     columns[minCol].push(item)
-    colHeights[minCol] += heightMap[item.height]
+    colHeights[minCol] += imageHeightMap[item.height] + 140 // image + card padding
   })
 
   useEffect(() => {
     if (!sectionRef.current) return
-
     const ctx = gsap.context(() => {
       if (headerRef.current) {
         gsap.fromTo(
@@ -126,8 +134,6 @@ export function WorkSection() {
           },
         )
       }
-
-      // Animate each column with a vertical offset stagger
       ;[col1Ref, col2Ref, col3Ref].forEach((colRef, colIndex) => {
         if (!colRef.current) return
         const cards = colRef.current.querySelectorAll("article")
@@ -150,7 +156,6 @@ export function WorkSection() {
         )
       })
     }, sectionRef)
-
     return () => ctx.revert()
   }, [])
 
@@ -169,7 +174,7 @@ export function WorkSection() {
         </p>
       </div>
 
-      {/* Masonry grid — 3 columns on desktop, 1 on mobile */}
+      {/* Masonry grid — 3 columns desktop, 1 mobile */}
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start">
         {columns.map((col, colIndex) => (
           <div
@@ -181,7 +186,6 @@ export function WorkSection() {
               <ShowcaseCard
                 key={`${colIndex}-${cardIndex}`}
                 showcase={showcase}
-                heightClass={showcase.height}
               />
             ))}
           </div>
@@ -191,54 +195,60 @@ export function WorkSection() {
   )
 }
 
-function ShowcaseCard({
-  showcase,
-  heightClass,
-}: {
-  showcase: (typeof showcases)[number]
-  heightClass: "tall" | "medium" | "short"
-}) {
+function ShowcaseCard({ showcase }: { showcase: (typeof showcases)[number] }) {
   const [isHovered, setIsHovered] = useState(false)
-
-  const minHeightMap = {
-    tall: "min-h-[300px] md:min-h-[340px]",
-    medium: "min-h-[220px] md:min-h-[260px]",
-    short: "min-h-[160px] md:min-h-[200px]",
-  }
+  const imgH = imageHeightMap[showcase.height]
 
   return (
     <article
       className={cn(
-        "group relative border border-border/40 p-5 flex flex-col justify-between transition-all duration-500 cursor-pointer overflow-hidden",
-        minHeightMap[heightClass],
+        "group relative border border-border/40 flex flex-col transition-all duration-500 cursor-pointer overflow-hidden",
         isHovered && "border-accent/60",
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background hover layer */}
+      {/* Image preview */}
       <div
-        className={cn(
-          "absolute inset-0 bg-accent/5 transition-opacity duration-500",
-          isHovered ? "opacity-100" : "opacity-0",
-        )}
-      />
-
-      {/* Content top */}
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        className="relative w-full overflow-hidden flex-shrink-0"
+        style={{ height: imgH }}
+      >
+        <Image
+          src={showcase.image}
+          alt={showcase.title}
+          fill
+          className={cn(
+            "object-cover transition-transform duration-700",
+            isHovered ? "scale-105" : "scale-100",
+          )}
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
+        {/* Dark overlay on hover */}
+        <div
+          className={cn(
+            "absolute inset-0 bg-background/40 transition-opacity duration-500",
+            isHovered ? "opacity-60" : "opacity-20",
+          )}
+        />
+        {/* Discipline tag over image */}
+        <div className="absolute top-3 left-3">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/90 bg-background/70 backdrop-blur-sm px-2 py-1">
             {showcase.discipline}
           </span>
-          <span
-            className={cn(
-              "font-mono text-[10px] transition-colors duration-300",
-              isHovered ? "text-accent" : "text-muted-foreground/40",
-            )}
-          >
-            {showcase.appreciations.toLocaleString()} appreciations
-          </span>
         </div>
+        {/* Appreciation count top right */}
+        <div
+          className={cn(
+            "absolute top-3 right-3 font-mono text-[10px] text-foreground/70 bg-background/70 backdrop-blur-sm px-2 py-1 transition-opacity duration-300",
+            isHovered ? "opacity-100" : "opacity-0",
+          )}
+        >
+          {showcase.appreciations.toLocaleString()} appr.
+        </div>
+      </div>
+
+      {/* Card body */}
+      <div className="p-5 flex flex-col gap-3">
         <h3
           className={cn(
             "font-[var(--font-bebas)] text-2xl md:text-3xl tracking-tight transition-colors duration-300 leading-tight",
@@ -247,44 +257,42 @@ function ShowcaseCard({
         >
           {showcase.title}
         </h3>
-      </div>
 
-      {/* Description — reveals on hover */}
-      <div className="relative z-10 mt-4">
+        {/* Description — reveals on hover */}
         <p
           className={cn(
-            "font-mono text-xs text-muted-foreground leading-relaxed transition-all duration-500 max-w-[280px]",
-            isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
+            "font-mono text-xs text-muted-foreground leading-relaxed transition-all duration-500",
+            isHovered ? "opacity-100 max-h-20" : "opacity-0 max-h-0 overflow-hidden",
           )}
         >
           {showcase.description}
         </p>
-      </div>
 
-      {/* Footer */}
-      <div className="relative z-10 mt-auto pt-4 border-t border-border/20 flex items-center justify-between">
-        <span className="font-mono text-[10px] text-muted-foreground">by {showcase.author}</span>
-        <div className="flex items-center gap-1.5">
-          {showcase.tools.map((tool) => (
-            <span
-              key={tool}
-              className="font-mono text-[10px] text-muted-foreground/60 border border-border/30 px-1.5 py-0.5"
-            >
-              {tool}
-            </span>
-          ))}
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-border/20 mt-1">
+          <span className="font-mono text-[10px] text-muted-foreground">by {showcase.author}</span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {showcase.tools.map((tool) => (
+              <span
+                key={tool}
+                className="font-mono text-[10px] text-muted-foreground/60 border border-border/30 px-1.5 py-0.5"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Corner accent */}
+      {/* Corner accent on hover */}
       <div
         className={cn(
-          "absolute top-0 right-0 w-12 h-12 transition-all duration-500",
+          "absolute bottom-0 right-0 w-10 h-10 transition-all duration-500 pointer-events-none",
           isHovered ? "opacity-100" : "opacity-0",
         )}
       >
-        <div className="absolute top-0 right-0 w-full h-[1px] bg-accent" />
-        <div className="absolute top-0 right-0 w-[1px] h-full bg-accent" />
+        <div className="absolute bottom-0 right-0 w-full h-[1px] bg-accent" />
+        <div className="absolute bottom-0 right-0 w-[1px] h-full bg-accent" />
       </div>
     </article>
   )
