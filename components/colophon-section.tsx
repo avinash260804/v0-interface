@@ -75,18 +75,32 @@ export function ColophonSection() {
     >
       {/* Section header */}
       <div ref={headerRef} className="mb-16">
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">04 / Colophon</span>
-        <h2 className="mt-4 font-[var(--font-bebas)] text-5xl md:text-7xl tracking-tight">CREDITS</h2>
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">04 / Community</span>
+        <h2 className="mt-4 font-[var(--font-bebas)] text-5xl md:text-7xl tracking-tight">JOIN THE HUB</h2>
       </div>
 
       {/* Multi-column layout */}
       <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 md:gap-12">
-        {/* Design */}
+        {/* Disciplines */}
         <div className="col-span-1">
-          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Design</h4>
+          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Disciplines</h4>
           <ul className="space-y-2">
-            <li className="font-mono text-xs text-foreground/80">Signal Studio</li>
-            <li className="font-mono text-xs text-foreground/80">Interface Lab</li>
+            <li className="font-mono text-xs text-foreground/80">Architecture</li>
+            <li className="font-mono text-xs text-foreground/80">Interior Design</li>
+            <li className="font-mono text-xs text-foreground/80">Urban Design</li>
+            <li className="font-mono text-xs text-foreground/80">Product Design</li>
+          </ul>
+        </div>
+
+        {/* Sections */}
+        <div className="col-span-1">
+          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Sections</h4>
+          <ul className="space-y-2">
+            <li className="font-mono text-xs text-foreground/80">Showcase</li>
+            <li className="font-mono text-xs text-foreground/80">Critique</li>
+            <li className="font-mono text-xs text-foreground/80">Help</li>
+            <li className="font-mono text-xs text-foreground/80">Discussions</li>
+            <li className="font-mono text-xs text-foreground/80">Resources</li>
           </ul>
         </div>
 
@@ -95,27 +109,18 @@ export function ColophonSection() {
           <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Stack</h4>
           <ul className="space-y-2">
             <li className="font-mono text-xs text-foreground/80">Next.js</li>
-            <li className="font-mono text-xs text-foreground/80">Tailwind CSS</li>
+            <li className="font-mono text-xs text-foreground/80">Prisma + PostgreSQL</li>
             <li className="font-mono text-xs text-foreground/80">Vercel</li>
           </ul>
         </div>
 
-        {/* Typography */}
+        {/* Community */}
         <div className="col-span-1">
-          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Typography</h4>
+          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Community</h4>
           <ul className="space-y-2">
-            <li className="font-mono text-xs text-foreground/80">Bebas Neue</li>
-            <li className="font-mono text-xs text-foreground/80">Inter</li>
-            <li className="font-mono text-xs text-foreground/80">Geist Mono</li>
-          </ul>
-        </div>
-
-        {/* Location */}
-        <div className="col-span-1">
-          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Location</h4>
-          <ul className="space-y-2">
-            <li className="font-mono text-xs text-foreground/80">Remote</li>
-            <li className="font-mono text-xs text-foreground/80">Everywhere</li>
+            <li className="font-mono text-xs text-foreground/80">48k Professionals</li>
+            <li className="font-mono text-xs text-foreground/80">120k Projects</li>
+            <li className="font-mono text-xs text-foreground/80">6 Communities</li>
           </ul>
         </div>
 
@@ -125,7 +130,7 @@ export function ColophonSection() {
           <ul className="space-y-2">
             <li>
               <a
-                href="mailto:hello@signal.studio"
+                href="mailto:hello@designershub.co"
                 className="font-mono text-xs text-foreground/80 hover:text-accent transition-colors duration-200"
               >
                 Email
@@ -142,12 +147,12 @@ export function ColophonSection() {
           </ul>
         </div>
 
-        {/* Year */}
+        {/* Status */}
         <div className="col-span-1">
-          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Year</h4>
+          <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Status</h4>
           <ul className="space-y-2">
-            <li className="font-mono text-xs text-foreground/80">2025</li>
-            <li className="font-mono text-xs text-foreground/80">Ongoing</li>
+            <li className="font-mono text-xs text-foreground/80">In Development</li>
+            <li className="font-mono text-xs text-foreground/80">Beta — 2025</li>
           </ul>
         </div>
       </div>
@@ -158,9 +163,9 @@ export function ColophonSection() {
         className="mt-24 pt-8 border-t border-border/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
       >
         <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-          © 2025 Signal. All rights reserved.
+          © 2025 Designers Hub (RenderMint). All rights reserved.
         </p>
-        <p className="font-mono text-[10px] text-muted-foreground">Designed with intention. Built with precision.</p>
+        <p className="font-mono text-[10px] text-muted-foreground">Built for creative professionals. Designed with discipline.</p>
       </div>
     </section>
   )

@@ -16,37 +16,37 @@ export function PrinciplesSection() {
     {
       number: "01",
       titleParts: [
-        { text: "INTERFACE", highlight: true },
-        { text: " MINIMALISM", highlight: false },
+        { text: "SHOWCASE", highlight: true },
+        { text: " YOUR WORK", highlight: false },
       ],
-      description: "Reduce until only the essential remains. Every element earns its place.",
+      description: "A gallery for polished, final portfolio pieces. Put your best work in front of peers who understand the craft.",
       align: "left",
     },
     {
       number: "02",
       titleParts: [
-        { text: "SYSTEMS", highlight: true },
-        { text: " OVER SCREENS", highlight: false },
+        { text: "STRUCTURED", highlight: false },
+        { text: " CRITIQUE", highlight: true },
       ],
-      description: "Design behaviors, not just layouts. Build logic that scales.",
+      description: "A studio environment for works-in-progress. Give and receive feedback with discipline and precision.",
       align: "right",
     },
     {
       number: "03",
       titleParts: [
-        { text: "CONTROLLED ", highlight: false },
-        { text: "TENSION", highlight: true },
+        { text: "TECHNICAL ", highlight: false },
+        { text: "HELP", highlight: true },
       ],
-      description: "Balance between restraint and expression. Confidence without excess.",
+      description: "A workshop for solving real software problems — Revit, Rhino, SketchUp, ArchiCAD. Answers from practitioners.",
       align: "left",
     },
     {
       number: "04",
       titleParts: [
-        { text: "SIGNAL ", highlight: false },
-        { text: "CLARITY", highlight: true },
+        { text: "CURATED ", highlight: false },
+        { text: "RESOURCES", highlight: true },
       ],
-      description: "Communication that cuts through noise. Precision in every interaction.",
+      description: "A library of templates, references, and tools curated by the community. Signal over noise.",
       align: "right",
     },
   ]
@@ -93,8 +93,8 @@ export function PrinciplesSection() {
     <section ref={sectionRef} id="principles" className="relative py-32 pl-6 md:pl-28 pr-6 md:pr-12">
       {/* Section header */}
       <div ref={headerRef} className="mb-24">
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">03 / Principles</span>
-        <h2 className="mt-4 font-[var(--font-bebas)] text-5xl md:text-7xl tracking-tight">HOW WE WORK</h2>
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">03 / Platform</span>
+        <h2 className="mt-4 font-[var(--font-bebas)] text-5xl md:text-7xl tracking-tight">HOW IT WORKS</h2>
       </div>
 
       {/* Staggered principles */}
@@ -108,7 +108,7 @@ export function PrinciplesSection() {
           >
             {/* Annotation label */}
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">
-              {principle.number} / {principle.titleParts[0].text.split(" ")[0]}
+              {principle.number} / {principle.titleParts.find((p) => p.highlight)?.text.trim().split(" ")[0] ?? principle.titleParts[0].text.split(" ")[0]}
             </span>
 
             <h3 className="font-[var(--font-bebas)] text-4xl md:text-6xl lg:text-8xl tracking-tight leading-none">
