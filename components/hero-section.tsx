@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import { ScrambleTextOnHover } from "@/components/scramble-text"
 import { SplitFlapText, SplitFlapMuteToggle, SplitFlapAudioProvider } from "@/components/split-flap-text"
 import { AnimatedNoise } from "@/components/animated-noise"
@@ -9,6 +9,9 @@ import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 gsap.registerPlugin(ScrollTrigger)
+
+const CYCLING_WORDS = ["DESIGN", "CRITIQUE", "IDENTITY", "SHOWCASE", "COMMUNITY", "CRAFT"]
+const CYCLE_INTERVAL = 3200 // ms between word changes
 
 const stats = [
   { value: "48k", label: "Creative Professionals" },
@@ -24,6 +27,15 @@ export function HeroSection() {
   const bodyRef = useRef<HTMLDivElement>(null)
   const ctaRef = useRef<HTMLDivElement>(null)
   const statsRef = useRef<HTMLDivElement>(null)
+  const [wordIndex, setWordIndex] = useState(0)
+
+  // Advance to next word on a fixed interval
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setWordIndex((i) => (i + 1) % CYCLING_WORDS.length)
+    }, CYCLE_INTERVAL)
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     if (!sectionRef.current) return
@@ -66,13 +78,13 @@ export function HeroSection() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative min-h-screen flex flex-col justify-between pt-16 pb-10 pl-6 md:pl-28 pr-6 md:pr-12 overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-between pt-16 pb-10 pl-6 md:pl-[268px] pr-6 md:pr-12 overflow-hidden"
     >
       <AnimatedNoise opacity={0.03} />
 
-      {/* Left vertical label */}
-      <div className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 pointer-events-none">
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground -rotate-90 origin-left block whitespace-nowrap">
+      {/* Left vertical label — inset from the 220px sidebar */}
+      <div className="absolute hidden md:block left-[234px] top-1/2 -translate-y-1/2 pointer-events-none">
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/40 -rotate-90 origin-left block whitespace-nowrap">
           COMMUNITY
         </span>
       </div>
@@ -102,8 +114,8 @@ export function HeroSection() {
               <SplitFlapAudioProvider>
                 <div className="relative">
                   <SplitFlapText
-                    text="DESIGN"
-                    speed={70}
+                    text={CYCLING_WORDS[wordIndex]}
+                    speed={60}
                   />
                   <div className="mt-3">
                     <SplitFlapMuteToggle />

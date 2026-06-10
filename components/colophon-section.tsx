@@ -71,7 +71,7 @@ export function ColophonSection() {
     <section
       ref={sectionRef}
       id="colophon"
-      className="relative py-32 pl-6 md:pl-28 pr-6 md:pr-12 border-t border-border/30"
+      className="relative py-32 pl-6 md:pl-[268px] pr-6 md:pr-12 border-t border-border/30"
     >
       {/* Section header */}
       <div ref={headerRef} className="mb-16">

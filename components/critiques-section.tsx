@@ -124,7 +124,7 @@ export function CritiquesSection() {
   const active = critiques[activeIndex]
 
   return (
-    <section id="critiques" ref={sectionRef} className="relative py-32 pl-6 md:pl-28 pr-6 md:pr-12">
+    <section id="critiques" ref={sectionRef} className="relative py-32 pl-6 md:pl-[268px] pr-6 md:pr-12">
       {/* Section header */}
       <div ref={headerRef} className="mb-16">
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">01 / Critiques</span>
