@@ -5,7 +5,7 @@ import { ScrambleTextOnHover } from "@/components/scramble-text"
 import { SplitFlapText, SplitFlapMuteToggle, SplitFlapAudioProvider } from "@/components/split-flap-text"
 import { AnimatedNoise } from "@/components/animated-noise"
 import { BitmapChevron } from "@/components/bitmap-chevron"
-import { FloatingShapes } from "@/components/floating-shapes"
+import { GridMotion } from "@/components/grid-motion"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
@@ -82,10 +82,14 @@ export function HeroSection() {
       className="relative min-h-screen flex flex-col justify-between pt-20 pb-10 px-6 md:px-16 overflow-hidden"
     >
       <AnimatedNoise opacity={0.03} />
-      <FloatingShapes />
+      
+      {/* Grid Motion Background — right side with fade */}
+      <div className="absolute inset-0 right-0 w-1/2 md:w-2/3 pointer-events-none z-0">
+        <GridMotion color="220, 160, 60" opacity={0.06} cellSize={50} />
+      </div>
 
       {/* All content */}
-      <div ref={contentRef} className="flex flex-col flex-1 justify-between opacity-100" style={{ animationDelay: "0ms" }}>
+      <div ref={contentRef} className="flex flex-col flex-1 justify-between opacity-100 relative z-10" style={{ animationDelay: "0ms" }}>
 
         {/* Top block — eyebrow + headline + body + cta */}
         <div className="flex-1 flex flex-col justify-center pb-4">
@@ -151,23 +155,26 @@ export function HeroSection() {
         {/* Stats bar — pinned to bottom */}
         <div
           ref={statsRef}
-          className="mt-12 flex items-start flex-wrap gap-10 md:gap-16 border-t border-border/20 pt-6"
+          className="mt-16 pt-8 border-t border-border/20 grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 items-start"
         >
           {stats.map((stat) => (
-            <div key={stat.label} data-stat className="flex flex-col gap-1">
-              <span className="font-[var(--font-bebas)] text-4xl md:text-5xl tracking-tight text-foreground leading-none">
-                {stat.value}
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <div key={stat.label} data-stat className="flex flex-col gap-3">
+              <div className="flex items-baseline gap-1">
+                <span className="font-[var(--font-bebas)] text-3xl md:text-4xl lg:text-5xl tracking-tight text-foreground leading-none">
+                  {stat.value}
+                </span>
+              </div>
+              <p className="font-mono text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground/70 leading-relaxed max-w-xs">
                 {stat.label}
-              </span>
+              </p>
             </div>
           ))}
 
-          {/* Open for submissions tag */}
-          <div className="ml-auto self-end">
-            <div className="border border-border/50 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Open for Submissions
+          {/* Open for submissions tag — right aligned on desktop, below on mobile */}
+          <div className="col-span-2 md:col-span-1 md:col-start-3 md:row-start-1 flex justify-start md:justify-end items-start md:items-center h-full">
+            <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/5 px-4 py-2 rounded-sm">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="font-mono text-[10px] uppercase tracking-widest text-accent/80">Open for Submissions</span>
             </div>
           </div>
         </div>
