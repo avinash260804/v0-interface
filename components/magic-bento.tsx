@@ -77,8 +77,8 @@ const COMMUNITY_CARDS: CardData[] = [
 ]
 
 const DEFAULT_GLOW_COLOR = "220, 160, 60"
-const DEFAULT_PARTICLE_COUNT = 10
-const DEFAULT_SPOTLIGHT_RADIUS = 280
+const DEFAULT_PARTICLE_COUNT = 6
+const DEFAULT_SPOTLIGHT_RADIUS = 180
 const MOBILE_BREAKPOINT = 768
 
 /* ─── Helpers ───────────────────────────────────────────────── */
@@ -86,11 +86,11 @@ const createParticleElement = (x: number, y: number, color = DEFAULT_GLOW_COLOR)
   const el = document.createElement("div")
   el.style.cssText = `
     position: absolute;
-    width: 3px;
-    height: 3px;
+    width: 2px;
+    height: 2px;
     border-radius: 50%;
-    background: rgba(${color}, 0.9);
-    box-shadow: 0 0 5px rgba(${color}, 0.5);
+    background: rgba(${color}, 0.7);
+    box-shadow: 0 0 3px rgba(${color}, 0.3);
     pointer-events: none;
     z-index: 100;
     left: ${x}px;
@@ -245,7 +245,7 @@ const GlobalSpotlight = ({
   useEffect(() => {
     if (disableAnimations || !gridRef?.current || !enabled) return
     const spotlight = document.createElement("div")
-    spotlight.style.cssText = `position:fixed;width:700px;height:700px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(${glowColor},0.12) 0%,rgba(${glowColor},0.06) 20%,rgba(${glowColor},0.02) 40%,transparent 65%);z-index:200;opacity:0;transform:translate(-50%,-50%);mix-blend-mode:screen;`
+    spotlight.style.cssText = `position:fixed;width:500px;height:500px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(${glowColor},0.08) 0%,rgba(${glowColor},0.03) 25%,rgba(${glowColor},0.01) 50%,transparent 70%);z-index:200;opacity:0;transform:translate(-50%,-50%);mix-blend-mode:screen;`
     document.body.appendChild(spotlight)
 
     const proximity = spotlightRadius * 0.5
@@ -276,7 +276,7 @@ const GlobalSpotlight = ({
       })
 
       gsap.to(spotlight, { left: e.clientX, top: e.clientY, duration: 0.1 })
-      const targetOp = minDist <= proximity ? 0.8 : minDist <= fadeDistance ? ((fadeDistance - minDist) / (fadeDistance - proximity)) * 0.8 : 0
+      const targetOp = minDist <= proximity ? 0.4 : minDist <= fadeDistance ? ((fadeDistance - minDist) / (fadeDistance - proximity)) * 0.4 : 0
       gsap.to(spotlight, { opacity: targetOp, duration: targetOp > 0 ? 0.2 : 0.5 })
     }
 

@@ -83,7 +83,7 @@ export function HeroSection() {
       <AnimatedNoise opacity={0.03} />
 
       {/* All content */}
-      <div ref={contentRef} className="flex flex-col flex-1 justify-between">
+      <div ref={contentRef} className="flex flex-col flex-1 justify-between opacity-100" style={{ animationDelay: "0ms" }}>
 
         {/* Top block — eyebrow + headline + body + cta */}
         <div className="flex-1 flex flex-col justify-center pb-4">
@@ -92,7 +92,7 @@ export function HeroSection() {
           <div ref={eyebrowRef} className="flex items-center gap-2 mb-6 md:mb-8">
             <span className="w-2 h-2 rounded-full bg-accent" />
             <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-              Where Creative Disciplines Meet
+              Professional feedback. Peer-driven growth.
             </span>
           </div>
 
@@ -119,9 +119,12 @@ export function HeroSection() {
           </div>
 
           {/* Body copy */}
-          <div ref={bodyRef} className="mt-8 md:mt-10 max-w-lg">
-            <p className="font-mono text-xs md:text-sm text-muted-foreground leading-relaxed">
-              Discussions, structured critiques, portfolio showcases, technical help, and curated resources — for architects, interior, product, urban, and graphic designers.
+          <div ref={bodyRef} className="mt-8 md:mt-10 max-w-2xl">
+            <h2 className="font-[var(--font-bebas)] text-[clamp(2rem,5vw,4rem)] leading-tight text-foreground mb-6">
+              Design Critiques, Peer Community, Portfolio Showcase
+            </h2>
+            <p className="font-mono text-sm md:text-base text-muted-foreground/80 leading-relaxed max-w-xl">
+              For architects, interior designers, product designers, urban planners, and graphic professionals. Share work, receive structured feedback, connect with peers, and grow your craft in a respectful, expert-moderated space.
             </p>
           </div>
 
