@@ -10,7 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 
 gsap.registerPlugin(ScrollTrigger)
 
-const CYCLING_WORDS = ["DESIGN", "CRITIQUE", "IDENTITY", "SHOWCASE", "COMMUNITY", "CRAFT"]
+const CYCLING_WORDS = ["DESIGN", "CRITIQUE", "IDENTITY", "SHOWCASE", "CRAFT"]
 const CYCLE_INTERVAL = 5000 // ms — long enough to read each word comfortably
 
 const stats = [
@@ -78,7 +78,7 @@ export function HeroSection() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative min-h-screen flex flex-col justify-between pt-32 pb-10 px-6 md:px-16 overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-between pt-20 pb-10 px-6 md:px-16 overflow-hidden"
     >
       <AnimatedNoise opacity={0.03} />
 
@@ -96,21 +96,21 @@ export function HeroSection() {
             </span>
           </div>
 
-          {/* "The community for" serif line */}
+          {/* Supporting subtitle — reduced weight */}
           <div ref={headlineRef}>
-            <p className="font-[var(--font-bebas)] text-[clamp(2.4rem,6vw,5rem)] text-foreground/80 leading-none tracking-tight">
-              The community for
+            <p className="font-mono text-[clamp(0.65rem,1.4vw,0.9rem)] uppercase tracking-[0.35em] text-muted-foreground/60 mb-10">
+              The forum for
             </p>
 
-            {/* Giant split-flap "DESIGN" — full viewport width */}
-            <div className="mt-0 -ml-1 md:-ml-2">
+            {/* Split-flap spotlight — centered, refined dimensions */}
+            <div className="flex justify-start">
               <SplitFlapAudioProvider>
-                <div className="relative">
+                <div className="relative inline-block">
                   <SplitFlapText
                     text={CYCLING_WORDS[wordIndex]}
                     speed={40}
                   />
-                  <div className="mt-3">
+                  <div className="mt-4">
                     <SplitFlapMuteToggle />
                   </div>
                 </div>

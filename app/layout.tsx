@@ -18,9 +18,9 @@ const ibmPlexMono = IBM_Plex_Mono({
 const bebasNeue = Bebas_Neue({ weight: "400", subsets: ["latin"], variable: "--font-bebas" })
 
 export const metadata: Metadata = {
-  title: "Designers Hub — Community for Architects & Designers",
+  title: "Atelier — Community for Architects & Designers",
   description:
-    "The professional community for Architecture, Interior Design, and Urban Design. Showcase work, receive structured critiques, solve technical problems, and build your reputation.",
+    "Atelier — the professional community for Architecture, Interior Design, and Urban Design. Showcase work, receive structured critiques, solve technical problems, and build your reputation.",
   generator: "v0.app",
   icons: {
     icon: [
