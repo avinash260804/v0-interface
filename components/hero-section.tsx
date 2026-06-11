@@ -5,6 +5,7 @@ import { ScrambleTextOnHover } from "@/components/scramble-text"
 import { SplitFlapText, SplitFlapMuteToggle, SplitFlapAudioProvider } from "@/components/split-flap-text"
 import { AnimatedNoise } from "@/components/animated-noise"
 import { BitmapChevron } from "@/components/bitmap-chevron"
+import { FloatingShapes } from "@/components/floating-shapes"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
@@ -81,6 +82,7 @@ export function HeroSection() {
       className="relative min-h-screen flex flex-col justify-between pt-20 pb-10 px-6 md:px-16 overflow-hidden"
     >
       <AnimatedNoise opacity={0.03} />
+      <FloatingShapes />
 
       {/* All content */}
       <div ref={contentRef} className="flex flex-col flex-1 justify-between opacity-100" style={{ animationDelay: "0ms" }}>
@@ -120,7 +122,7 @@ export function HeroSection() {
 
           {/* Body copy */}
           <div ref={bodyRef} className="mt-8 md:mt-10 max-w-2xl">
-            <h2 className="font-[var(--font-bebas)] text-[clamp(2rem,5vw,4rem)] leading-tight text-foreground mb-6">
+            <h2 className="font-[var(--font-bebas)] text-[clamp(1.3rem,3.5vw,2.2rem)] leading-tight text-foreground mb-6">
               Design Critiques, Peer Community, Portfolio Showcase
             </h2>
             <p className="font-mono text-sm md:text-base text-muted-foreground/80 leading-relaxed max-w-xl">
