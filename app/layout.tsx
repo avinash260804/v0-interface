@@ -51,7 +51,6 @@ export default function RootLayout({
       <body
         className={`${ibmPlexSans.variable} ${bebasNeue.variable} ${ibmPlexMono.variable} font-sans antialiased overflow-x-hidden`}
       >
-        <div className="noise-overlay" aria-hidden="true" />
         <SmoothScroll>{children}</SmoothScroll>
         <Analytics />
       </body>
