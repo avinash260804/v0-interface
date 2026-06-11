@@ -176,37 +176,7 @@ export function AtelierNav() {
               className="w-[200px] md:w-[260px] flex-shrink-0 flex flex-col justify-between p-8 md:p-10 border-r border-border/10"
             >
               <div className="flex flex-col gap-8">
-                {/* Sections list */}
-                <div>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground/40 mb-5" data-meta>
-                    SECTIONS
-                  </p>
-                  <ul className="flex flex-col gap-3" role="list">
-                    {SECTIONS.map(({ id, label, index }) => (
-                      <li key={id} data-meta>
-                        <button
-                          onClick={() => scrollTo(id)}
-                          className={cn(
-                            "flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest transition-colors duration-200 group",
-                            activeSection === id
-                              ? "text-accent"
-                              : "text-muted-foreground hover:text-foreground",
-                          )}
-                        >
-                          <span className="text-[9px] opacity-40 group-hover:opacity-80 transition-opacity w-5 flex-shrink-0">
-                            {index}
-                          </span>
-                          {activeSection === id && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
-                          )}
-                          {label}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Meta links */}
+                {/* Meta links only */}
                 <div>
                   <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground/40 mb-5" data-meta>
                     INFO
@@ -232,14 +202,14 @@ export function AtelierNav() {
                 className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/25 leading-relaxed"
                 data-meta
               >
-                The forum for<br />design disciplines
+                The community for<br />design disciplines
               </p>
             </div>
 
             {/* ── Right area: large primary links ──────────────── */}
             <div
               ref={linksRef}
-              className="flex-1 flex flex-col justify-center px-10 md:px-16 lg:px-24 gap-0 overflow-y-auto"
+              className="flex-1 flex flex-col justify-center px-10 md:px-16 lg:px-24 gap-0 overflow-hidden"
             >
               {SECTIONS.map(({ id, label, index }) => (
                 <button
@@ -247,7 +217,7 @@ export function AtelierNav() {
                   data-link
                   onClick={() => scrollTo(id)}
                   className={cn(
-                    "group flex items-baseline gap-4 text-left py-3 md:py-4 border-b border-border/10 last:border-b-0",
+                    "group flex items-baseline gap-4 text-left py-2 md:py-3 border-b border-border/10 last:border-b-0",
                     "transition-all duration-200 hover:pl-3",
                   )}
                 >
@@ -257,7 +227,7 @@ export function AtelierNav() {
                   <span
                     className={cn(
                       "font-[var(--font-bebas)] leading-none tracking-tight transition-colors duration-200",
-                      "text-[clamp(2.5rem,7vw,6rem)]",
+                      "text-[clamp(2rem,5.5vw,5rem)]",
                       activeSection === id
                         ? "text-accent"
                         : "text-foreground/70 group-hover:text-foreground",

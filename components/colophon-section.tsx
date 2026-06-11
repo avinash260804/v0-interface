@@ -3,14 +3,15 @@
 import { useRef, useEffect } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { MagicBento } from "@/components/magic-bento"
 
 gsap.registerPlugin(ScrollTrigger)
 
 export function ColophonSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-  const gridRef = useRef<HTMLDivElement>(null)
-  const footerRef = useRef<HTMLDivElement>(null)
+  const sectionRef  = useRef<HTMLElement>(null)
+  const headerRef   = useRef<HTMLDivElement>(null)
+  const bentoRef    = useRef<HTMLDivElement>(null)
+  const footerRef   = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!sectionRef.current) return
@@ -21,17 +22,17 @@ export function ColophonSection() {
           scrollTrigger: { trigger: headerRef.current, start: "top 85%", toggleActions: "play none none reverse" },
         })
       }
-      if (gridRef.current) {
-        const columns = gridRef.current.querySelectorAll(":scope > div")
-        gsap.from(columns, {
-          y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out",
-          scrollTrigger: { trigger: gridRef.current, start: "top 85%", toggleActions: "play none none reverse" },
+      if (bentoRef.current) {
+        gsap.from(bentoRef.current, {
+          y: 48, opacity: 0, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: bentoRef.current, start: "top 88%", toggleActions: "play none none reverse" },
         })
       }
       if (footerRef.current) {
-        gsap.from(footerRef.current, {
-          y: 20, opacity: 0, duration: 0.8, ease: "power3.out",
-          scrollTrigger: { trigger: footerRef.current, start: "top 95%", toggleActions: "play none none reverse" },
+        const cols = footerRef.current.querySelectorAll(":scope > div")
+        gsap.from(cols, {
+          y: 24, opacity: 0, duration: 0.7, stagger: 0.08, ease: "power3.out",
+          scrollTrigger: { trigger: footerRef.current, start: "top 92%", toggleActions: "play none none reverse" },
         })
       }
     }, sectionRef)
@@ -42,18 +43,41 @@ export function ColophonSection() {
     <section
       ref={sectionRef}
       id="colophon"
-      className="relative py-24 px-6 md:px-16 lg:pl-[calc(52px+4rem)] border-t border-border/30"
+      className="relative py-24 px-6 md:px-16 border-t border-border/30"
     >
       {/* Section header */}
-      <div ref={headerRef} className="mb-14">
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">05 / Community</span>
-        <h2 className="mt-4 font-[var(--font-bebas)] text-5xl md:text-7xl tracking-tight">DESIGNERS HUB</h2>
+      <div ref={headerRef} className="mb-10">
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">
+          05 / Community
+        </span>
+        <h2 className="mt-4 font-[var(--font-bebas)] text-5xl md:text-7xl tracking-tight">
+          ATELIER
+        </h2>
+        <p className="mt-3 font-mono text-xs text-muted-foreground max-w-md leading-relaxed">
+          A living dashboard of the Atelier community — members, disciplines, showcases, and the daily critique sessions that define our practice.
+        </p>
       </div>
 
-      {/* Multi-column layout — removed Stack column, added Social */}
-      <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12">
+      {/* Magic Bento community preview */}
+      <div ref={bentoRef} className="-mx-3">
+        <MagicBento
+          enableStars={true}
+          enableSpotlight={true}
+          enableBorderGlow={true}
+          glowColor="220, 160, 60"
+          particleCount={10}
+          spotlightRadius={280}
+          clickEffect={true}
+        />
+      </div>
+
+      {/* Footer link columns */}
+      <div
+        ref={footerRef}
+        className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 border-t border-border/20 pt-12"
+      >
         {/* Disciplines */}
-        <div className="col-span-1">
+        <div>
           <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Disciplines</h4>
           <ul className="space-y-2">
             {["Architecture", "Interior Design", "Urban Design", "Product Design", "Graphic Design"].map((d) => (
@@ -67,15 +91,15 @@ export function ColophonSection() {
         </div>
 
         {/* Sections */}
-        <div className="col-span-1">
+        <div>
           <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Sections</h4>
           <ul className="space-y-2">
             {[
-              { label: "Showcase",   href: "#work" },
-              { label: "Critique",   href: "#critiques" },
-              { label: "Discussions",href: "#critiques" },
-              { label: "Help Forum", href: "#principles" },
-              { label: "Resources",  href: "#principles" },
+              { label: "Showcase",    href: "#work" },
+              { label: "Critique",    href: "#critiques" },
+              { label: "Discussions", href: "#critiques" },
+              { label: "Help Forum",  href: "#principles" },
+              { label: "Resources",   href: "#principles" },
             ].map((item) => (
               <li key={item.label}>
                 <a href={item.href} className="font-mono text-xs text-foreground/70 hover:text-accent transition-colors duration-200">
@@ -87,7 +111,7 @@ export function ColophonSection() {
         </div>
 
         {/* Community */}
-        <div className="col-span-1">
+        <div>
           <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Community</h4>
           <ul className="space-y-2">
             <li className="font-mono text-xs text-foreground/70">48k Professionals</li>
@@ -97,15 +121,15 @@ export function ColophonSection() {
           </ul>
         </div>
 
-        {/* Social */}
-        <div className="col-span-1">
+        {/* Follow */}
+        <div>
           <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Follow</h4>
           <ul className="space-y-2">
             {[
-              { label: "Twitter / X",  href: "#" },
-              { label: "Instagram",    href: "#" },
-              { label: "LinkedIn",     href: "#" },
-              { label: "Discord",      href: "#" },
+              { label: "Twitter / X", href: "#" },
+              { label: "Instagram",   href: "#" },
+              { label: "LinkedIn",    href: "#" },
+              { label: "Discord",     href: "#" },
             ].map((item) => (
               <li key={item.label}>
                 <a href={item.href} className="font-mono text-xs text-foreground/70 hover:text-accent transition-colors duration-200">
@@ -117,12 +141,12 @@ export function ColophonSection() {
         </div>
 
         {/* Contact */}
-        <div className="col-span-1">
+        <div>
           <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-4">Contact</h4>
           <ul className="space-y-2">
             <li>
-              <a href="mailto:hello@designershub.co" className="font-mono text-xs text-foreground/70 hover:text-accent transition-colors duration-200">
-                hello@designershub.co
+              <a href="mailto:hello@atelier.co" className="font-mono text-xs text-foreground/70 hover:text-accent transition-colors duration-200">
+                hello@atelier.co
               </a>
             </li>
             <li>
@@ -139,15 +163,12 @@ export function ColophonSection() {
         </div>
       </div>
 
-      {/* Bottom copyright */}
-      <div
-        ref={footerRef}
-        className="mt-16 pt-8 border-t border-border/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-      >
+      {/* Copyright bar */}
+      <div className="mt-12 pt-8 border-t border-border/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
           <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-            © 2025 Designers Hub. All rights reserved.
+            &copy; 2025 Atelier. All rights reserved.
           </p>
         </div>
         <p className="font-mono text-[10px] text-muted-foreground/50">

@@ -99,7 +99,7 @@ export function HeroSection() {
           {/* Supporting subtitle — reduced weight */}
           <div ref={headlineRef}>
             <p className="font-mono text-[clamp(0.65rem,1.4vw,0.9rem)] uppercase tracking-[0.35em] text-muted-foreground/60 mb-10">
-              The forum for
+              The community for
             </p>
 
             {/* Split-flap spotlight — centered, refined dimensions */}
